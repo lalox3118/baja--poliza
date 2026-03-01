@@ -473,6 +473,7 @@
   <div class="footer">© 2025 Leandro Sanchez · Asesor de Seguros</div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   // Show/hide "otro motivo" textarea
   document.getElementById('motivo').addEventListener('change', function() {
@@ -487,7 +488,7 @@
     }
   });
 
-  // Form submit → send email via mailto
+  // Form submit → generate PDF + open WhatsApp
   document.getElementById('bajaForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -506,51 +507,161 @@
     });
     if (!valid) return;
 
-    // Build values
-    const nombre    = document.getElementById('nombre').value;
-    const apellido  = document.getElementById('apellido').value;
-    const dni       = document.getElementById('dni').value;
-    const telefono  = document.getElementById('telefono').value || 'No ingresado';
-    const email     = document.getElementById('email').value;
-    const nroPoliza = document.getElementById('nroPoliza').value;
-    const compania  = document.getElementById('compania').value || 'No especificada';
-    const motivoEl  = document.getElementById('motivo');
+    // Collect values
+    const nombre      = document.getElementById('nombre').value;
+    const apellido    = document.getElementById('apellido').value;
+    const dni         = document.getElementById('dni').value;
+    const telefono    = document.getElementById('telefono').value || 'No ingresado';
+    const email       = document.getElementById('email').value;
+    const nroPoliza   = document.getElementById('nroPoliza').value;
+    const compania    = document.getElementById('compania').value || 'No especificada';
+    const motivoEl    = document.getElementById('motivo');
     const motivoTexto = motivoEl.options[motivoEl.selectedIndex].text;
-    const otroMotivo = document.getElementById('otroMotivo').value || '';
-
+    const otroMotivo  = document.getElementById('otroMotivo').value || '';
     const motivoFinal = motivoTexto + (otroMotivo ? `: ${otroMotivo}` : '');
+    const fecha       = new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
 
-    const subject = encodeURIComponent(`Solicitud de Baja de Póliza – ${nombre} ${apellido}`);
+    // Generate PDF with jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210, margin = 20;
 
-    const body = encodeURIComponent(
-`SOLICITUD DE BAJA DE PÓLIZA
+    // Background
+    doc.setFillColor(30, 32, 43);
+    doc.rect(0, 0, W, 297, 'F');
 
--------------------------------
-DATOS DEL ASEGURADO
--------------------------------
-Nombre y apellido : ${nombre} ${apellido}
-DNI               : ${dni}
-Teléfono          : ${telefono}
-Email             : ${email}
+    // Header bar
+    doc.setFillColor(43, 45, 58);
+    doc.rect(0, 0, W, 45, 'F');
 
--------------------------------
-DATOS DE LA PÓLIZA
--------------------------------
-Número de póliza  : ${nroPoliza}
-Compañía          : ${compania}
-Motivo de baja    : ${motivoFinal}
+    // Logo mark (simplified L shape)
+    doc.setFillColor(176, 181, 192);
+    doc.rect(margin, 10, 5, 22, 'F');
+    doc.rect(margin, 28, 18, 4, 'F');
+    doc.setFillColor(138, 143, 154);
+    doc.rect(margin + 7, 14, 4, 16, 'F');
+    doc.rect(margin + 7, 28, 14, 3, 'F');
 
--------------------------------
-Solicitud generada desde el formulario web de Leandro Sanchez Asesor de Seguros.`
-    );
+    // Brand name
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(240, 242, 245);
+    doc.text('Leandro', margin + 25, 22);
+    doc.setTextColor(176, 181, 192);
+    doc.text('Sanchez', margin + 25 + doc.getTextWidth('Leandro '), 22);
 
-    window.location.href = `mailto:leandrorsanchez@live.com?subject=${subject}&body=${body}`;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(176, 181, 192);
+    doc.setCharSpace(2);
+    doc.text('ASESOR DE SEGUROS', margin + 25, 29);
+    doc.setCharSpace(0);
 
-    // Show success after short delay
+    // Title
+    doc.setFillColor(200, 100, 100, 0.3);
+    doc.setDrawColor(200, 100, 100);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(margin, 52, W - margin * 2, 12, 2, 2, 'FD');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(230, 180, 180);
+    doc.setCharSpace(2);
+    doc.text('SOLICITUD DE BAJA DE PÓLIZA', W / 2, 60, { align: 'center' });
+    doc.setCharSpace(0);
+
+    // Date
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(130, 135, 150);
+    doc.text(`Fecha: ${fecha}`, W - margin, 72, { align: 'right' });
+
+    // Section helper
+    let y = 78;
+    const drawSection = (title, fields) => {
+      // Section title
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      doc.setTextColor(176, 181, 192);
+      doc.setCharSpace(2);
+      doc.text(title, margin, y);
+      doc.setCharSpace(0);
+      y += 2;
+      doc.setDrawColor(176, 181, 192, 0.4);
+      doc.setLineWidth(0.2);
+      doc.line(margin, y, W - margin, y);
+      y += 5;
+
+      fields.forEach(([label, value]) => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(130, 135, 154);
+        doc.text(label, margin, y);
+        doc.setTextColor(220, 222, 230);
+        doc.setFont('helvetica', 'bold');
+        doc.text(value, margin + 45, y);
+        y += 7;
+      });
+      y += 4;
+    };
+
+    drawSection('DATOS DEL ASEGURADO', [
+      ['Nombre y apellido', `${nombre} ${apellido}`],
+      ['DNI', dni],
+      ['Teléfono', telefono],
+      ['Email', email],
+    ]);
+
+    drawSection('DATOS DE LA PÓLIZA', [
+      ['N° de póliza', nroPoliza],
+      ['Compañía', compania],
+      ['Motivo de baja', motivoFinal],
+    ]);
+
+    // Disclaimer box
+    y += 4;
+    doc.setFillColor(43, 45, 58);
+    doc.setDrawColor(80, 85, 100);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(margin, y, W - margin * 2, 20, 2, 2, 'FD');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(7.5);
+    doc.setTextColor(130, 135, 154);
+    const disclaimer = 'El/la firmante declara su voluntad de dar de baja la póliza indicada y autoriza al asesor a gestionar la cancelación ante la compañía aseguradora.';
+    const lines = doc.splitTextToSize(disclaimer, W - margin * 2 - 10);
+    doc.text(lines, margin + 5, y + 7);
+    y += 28;
+
+    // Footer
+    doc.setFillColor(43, 45, 58);
+    doc.rect(0, 275, W, 22, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(100, 105, 120);
+    doc.setCharSpace(1);
+    doc.text('© 2025 LEANDRO SANCHEZ · ASESOR DE SEGUROS', W / 2, 284, { align: 'center' });
+    doc.setCharSpace(0);
+
+    // Download PDF
+    const fileName = `Baja_Poliza_${nombre}_${apellido}_${nroPoliza}.pdf`.replace(/\s+/g, '_');
+    doc.save(fileName);
+
+    // WhatsApp message
     setTimeout(() => {
+      let msg = `❌ *SOLICITUD DE BAJA DE PÓLIZA*\n\n`;
+      msg += `👤 *Nombre:* ${nombre} ${apellido}\n`;
+      msg += `🪪 *DNI:* ${dni}\n`;
+      msg += `📱 *Teléfono:* ${telefono}\n`;
+      msg += `📧 *Email:* ${email}\n\n`;
+      msg += `📄 *N° de Póliza:* ${nroPoliza}\n`;
+      msg += `🏢 *Compañía:* ${compania}\n`;
+      msg += `❓ *Motivo:* ${motivoFinal}\n\n`;
+      msg += `📎 _El PDF con la solicitud fue descargado en tu dispositivo._`;
+
+      window.open(`https://wa.me/543413221063?text=${encodeURIComponent(msg)}`, '_blank');
+
       document.getElementById('formContent').style.display = 'none';
       document.getElementById('successMsg').style.display = 'block';
-    }, 800);
+    }, 1000);
   });
 </script>
 </body>
