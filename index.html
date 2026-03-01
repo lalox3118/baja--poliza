@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baja de Póliza – Leandro Sanchez</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap');
+
+  :root {
+    --dark: #2b2d3a;
+    --darker: #1e202b;
+    --silver: #b0b5c0;
+    --silver-light: #d4d8e0;
+    --white: #f0f2f5;
+    --border: rgba(176,181,192,0.25);
+    --red: rgba(200,100,100,0.7);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    min-height: 100vh;
+    font-family: 'Raleway', sans-serif;
+    color: var(--white);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem 3rem;
+    background-image: radial-gradient(ellipse at 70% 20%, rgba(180,185,200,0.06) 0%, transparent 60%),
+                      radial-gradient(ellipse at 20% 80%, rgba(100,105,130,0.08) 0%, transparent 50%);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .logo-mark {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .logo-mark svg {
+    width: 56px;
+    height: 56px;
+    filter: drop-shadow(0 4px 16px rgba(180,185,200,0.18));
+  }
+
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--white);
+  }
+
+  .brand-name span { color: var(--silver); }
+
+  .brand-sub {
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    color: var(--silver);
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  /* Card */
+  .card {
+    background: rgba(43,45,58,0.85);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.5rem 2.5rem 2rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: fadeUp 0.7s 0.15s ease both;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--silver-light);
+    margin-bottom: 0.3rem;
+  }
+
+  .card-desc {
+    font-size: 0.78rem;
+    color: var(--silver);
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Warning banner */
+  .warning {
+    background: rgba(200,100,100,0.1);
+    border: 1px solid rgba(200,100,100,0.3);
+    border-radius: 3px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1.8rem;
+    font-size: 0.76rem;
+    color: rgba(220,160,160,0.9);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+
+  .warning strong {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    color: rgba(220,150,150,1);
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 1.25rem;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.8rem 1rem;
+    color: var(--white);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder { color: rgba(176,181,192,0.4); }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--silver);
+    background: rgba(255,255,255,0.07);
+  }
+
+  select option {
+    background: var(--darker);
+    color: var(--white);
+  }
+
+  .select-wrapper { position: relative; }
+
+  .select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--silver);
+    pointer-events: none;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.8rem 0;
+  }
+
+  /* Confirm checkbox */
+  .confirm-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.78rem;
+    color: var(--silver);
+    line-height: 1.6;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.22s ease;
+  }
+
+  .confirm-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+
+  .confirm-box {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 1px solid var(--silver);
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-top: 2px;
+  }
+
+  .confirm-label input[type="checkbox"]:checked ~ .confirm-box {
+    background: var(--silver-light);
+    border-color: var(--silver-light);
+  }
+
+  .confirm-label input[type="checkbox"]:checked ~ .confirm-box::after {
+    content: '✓';
+    font-size: 11px;
+    color: var(--darker);
+    font-weight: 700;
+  }
+
+  .confirm-label:has(input:checked) {
+    border-color: var(--silver-light);
+    background: rgba(176,181,192,0.08);
+  }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(200,100,100,0.2), rgba(180,80,80,0.1));
+    border: 1px solid rgba(200,120,120,0.5);
+    border-radius: 3px;
+    padding: 1rem;
+    color: rgba(230,180,180,0.95);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.28s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+  }
+
+  .submit-btn:hover::before { opacity: 1; }
+  .submit-btn:hover {
+    border-color: rgba(220,140,140,0.7);
+    box-shadow: 0 8px 32px rgba(200,100,100,0.15);
+    transform: translateY(-1px);
+  }
+
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Back link */
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--silver);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover { color: var(--white); }
+
+  /* Success */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 2rem 1rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .success-msg .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+  .success-msg h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--silver-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .success-msg p {
+    font-size: 0.82rem;
+    color: var(--silver);
+    line-height: 1.7;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.68rem;
+    color: rgba(176,181,192,0.4);
+    letter-spacing: 0.1em;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 1.8rem 1.4rem 1.5rem; }
+    .row-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="8" width="8" height="36" fill="#b0b5c0"/>
+        <rect x="10" y="36" width="28" height="8" fill="#b0b5c0"/>
+        <rect x="22" y="16" width="6" height="26" fill="#8a8f9a"/>
+        <rect x="22" y="34" width="20" height="6" fill="#8a8f9a"/>
+      </svg>
+    </div>
+    <div class="brand-name">Leandro <span>Sanchez</span></div>
+    <div class="brand-sub">Asesor de Seguros</div>
+  </div>
+
+  <div class="card">
+    <div id="formContent">
+      <div class="card-title">Baja de Póliza</div>
+      <div class="card-desc">Completá el formulario para solicitar la cancelación de tu seguro</div>
+
+      <div class="warning">
+        <strong>⚠ Atención</strong>
+        Esta solicitud iniciará el proceso de baja de tu póliza. Un asesor se comunicará con vos para confirmar la cancelación.
+      </div>
+
+      <form id="bajaForm" novalidate>
+
+        <!-- Datos personales -->
+        <div class="row-2">
+          <div class="form-group" style="animation-delay:0.05s">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group" style="animation-delay:0.1s">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="apellido" placeholder="Tu apellido" required>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group" style="animation-delay:0.15s">
+            <label for="dni">DNI</label>
+            <input type="text" id="dni" name="dni" placeholder="Ej: 30.123.456" required maxlength="12">
+          </div>
+          <div class="form-group" style="animation-delay:0.2s">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="+54 341 …">
+          </div>
+        </div>
+
+        <div class="form-group" style="animation-delay:0.22s">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Datos de la póliza -->
+        <div class="row-2">
+          <div class="form-group" style="animation-delay:0.25s">
+            <label for="nroPoliza">Número de póliza</label>
+            <input type="text" id="nroPoliza" name="nro_poliza" placeholder="Ej: 0012345678" required>
+          </div>
+          <div class="form-group" style="animation-delay:0.28s">
+            <label for="compania">Compañía aseguradora</label>
+            <input type="text" id="compania" name="compania" placeholder="Ej: Sancor, Zurich…">
+          </div>
+        </div>
+
+        <div class="form-group" style="animation-delay:0.3s">
+          <label for="motivo">Motivo de baja</label>
+          <div class="select-wrapper">
+            <select id="motivo" name="motivo" required>
+              <option value="">Seleccioná un motivo</option>
+              <option value="venta_vehiculo">Venta del vehículo</option>
+              <option value="cambio_compania">Cambio de compañía</option>
+              <option value="precio">Precio elevado</option>
+              <option value="robo_destruccion">Robo o destrucción total</option>
+              <option value="no_uso">Ya no uso el vehículo</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="animation-delay:0.35s" id="otroMotivoGroup" style="display:none">
+          <label for="otroMotivo">Especificá el motivo</label>
+          <textarea id="otroMotivo" name="otro_motivo" placeholder="Contanos el motivo de la baja…"></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Confirmación -->
+        <div class="form-group" style="animation-delay:0.4s; margin-bottom:1.5rem">
+          <label class="confirm-label">
+            <input type="checkbox" id="confirmar" required>
+            <span class="confirm-box"></span>
+            <span>Confirmo que deseo solicitar la baja de la póliza indicada y entiendo que esta acción no es inmediata hasta ser procesada por el asesor.</span>
+          </label>
+        </div>
+
+        <div class="form-group" style="animation-delay:0.45s">
+          <button type="submit" class="submit-btn" id="submitBtn">Solicitar Baja</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Success -->
+    <div class="success-msg" id="successMsg">
+      <div class="icon">✦</div>
+      <h3>Solicitud Enviada</h3>
+      <p>Tu pedido de baja fue recibido correctamente.<br>Leandro Sanchez te contactará a la brevedad<br>para confirmar la cancelación de tu póliza.</p>
+    </div>
+  </div>
+
+  <div class="footer">© 2025 Leandro Sanchez · Asesor de Seguros</div>
+</div>
+
+<script>
+  // Show/hide "otro motivo" textarea
+  document.getElementById('motivo').addEventListener('change', function() {
+    const group = document.getElementById('otroMotivoGroup');
+    const textarea = document.getElementById('otroMotivo');
+    if (this.value === 'otro') {
+      group.style.display = 'block';
+      textarea.required = true;
+    } else {
+      group.style.display = 'none';
+      textarea.required = false;
+    }
+  });
+
+  // Form submit → send email via mailto
+  document.getElementById('bajaForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Validate required fields
+    const required = this.querySelectorAll('[required]');
+    let valid = true;
+    required.forEach(el => {
+      const isEmpty = el.type === 'checkbox' ? !el.checked : !el.value.trim();
+      if (isEmpty) {
+        valid = false;
+        if (el.type !== 'checkbox') {
+          el.style.borderColor = 'rgba(200,120,120,0.7)';
+          el.addEventListener('input', () => el.style.borderColor = '', { once: true });
+        }
+      }
+    });
+    if (!valid) return;
+
+    // Build values
+    const nombre    = document.getElementById('nombre').value;
+    const apellido  = document.getElementById('apellido').value;
+    const dni       = document.getElementById('dni').value;
+    const telefono  = document.getElementById('telefono').value || 'No ingresado';
+    const email     = document.getElementById('email').value;
+    const nroPoliza = document.getElementById('nroPoliza').value;
+    const compania  = document.getElementById('compania').value || 'No especificada';
+    const motivoEl  = document.getElementById('motivo');
+    const motivoTexto = motivoEl.options[motivoEl.selectedIndex].text;
+    const otroMotivo = document.getElementById('otroMotivo').value || '';
+
+    const motivoFinal = motivoTexto + (otroMotivo ? `: ${otroMotivo}` : '');
+
+    const subject = encodeURIComponent(`Solicitud de Baja de Póliza – ${nombre} ${apellido}`);
+
+    const body = encodeURIComponent(
+`SOLICITUD DE BAJA DE PÓLIZA
+
+-------------------------------
+DATOS DEL ASEGURADO
+-------------------------------
+Nombre y apellido : ${nombre} ${apellido}
+DNI               : ${dni}
+Teléfono          : ${telefono}
+Email             : ${email}
+
+-------------------------------
+DATOS DE LA PÓLIZA
+-------------------------------
+Número de póliza  : ${nroPoliza}
+Compañía          : ${compania}
+Motivo de baja    : ${motivoFinal}
+
+-------------------------------
+Solicitud generada desde el formulario web de Leandro Sanchez Asesor de Seguros.`
+    );
+
+    window.location.href = `mailto:leandrorsanchez@live.com?subject=${subject}&body=${body}`;
+
+    // Show success after short delay
+    setTimeout(() => {
+      document.getElementById('formContent').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    }, 800);
+  });
+</script>
+</body>
+</html>
